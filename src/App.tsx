@@ -1,25 +1,34 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import TitleBar from './components/TitleBar';
+import SearchBar from './components/SearchBar';
 
 function App() {
+  const [text, setText] = useState([]);
+  useEffect(() => {
+    axios.get('http://localhost:3001/search?caseInsensitive=true&q=hamlet').then((response) => {
+      setText(response.data);
+    });
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <TitleBar />
+      <SearchBar />
+        <table>
+          <tbody>
+            {text.map((item) => {
+              return (
+                <tr>
+                  <td>{item}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </>
   );
 }
 
