@@ -26,12 +26,15 @@ a. Run the React development server and test the application in a web browser.
 b. Ensure that the title bar, search bar, and table are displayed correctly and that the search functionality works as expected.
 c. Refine the appearance and behavior of the components as needed using Tailwind CSS classes.
 
-7. notes: currently I am deciding between react bootstrap and Tailwind css. Though I have never used Tailwind. I think that after doing some research into it i can 
+notes: currently I am deciding between react bootstrap and Tailwind css. Though I have never used Tailwind. I think that after doing some research into it i can 
 determine that I would prefer using tailwind.
 
-8. If I use react boostrap then I am working with a big bundle size that sits in my code. In addition to that i have less flexibilitiy with the framework then I would
+If I use react boostrap then I am working with a big bundle size that sits in my code. In addition to that i have less flexibilitiy with the framework then I would
 with tailwind. Also, when It ships i belive it dosen't remove components i don't use. I think that if this was a larger project. using tailwind (which could incur a small learning curve)
 could be beneficial in keeping the build size small and making things more customizable.
 
-9. I have also decided not to use Redux as this would be helpful for a larger frontend project. Seeing as this will not be that large as of now. I believe that 
+I have also decided not to use Redux as this would be helpful for a larger frontend project. Seeing as this will not be that large as of now. I believe that 
 it would be overkill to have Redux at this time. 
+
+I'm even thinking if I even need a submit button at this point. if it's not to expensive to hold onto the full text and search it I can use the debounced
+search term function to search the text and have it return a list of things dynamically. If this is going to be a good user expereince that's what I would want

@@ -5,29 +5,21 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import TitleBar from './components/TitleBar';
 import SearchBar from './components/SearchBar';
+import ResultsTable from './components/ResultsTable';
 
 function App() {
-  const [text, setText] = useState([]);
-  useEffect(() => {
-    axios.get('http://localhost:3001/search?caseInsensitive=true&q=hamlet').then((response) => {
-      setText(response.data);
-    });
-  }, []);
+  const [results, setResults] = useState<string[]>([]);
+  const [caseSensitive, setCaseSensitive] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
+  const [quantity, setQuantity] = useState(10);
+
+  console.log("fucking loaded!!!!")
   return (
     <>
       <TitleBar />
-      <SearchBar />
-        <table>
-          <tbody>
-            {text.map((item) => {
-              return (
-                <tr>
-                  <td>{item}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <SearchBar caseSensitive={caseSensitive} results={results} searchTerm={searchTerm} pageNumber={pageNumber} quantity={quantity} setResults={setResults} setCaseSensitive={setCaseSensitive} setSearchTerm={setSearchTerm} setPageNumber={setPageNumber} setQuantity={setQuantity} />
+      <ResultsTable results={results} searchTerm={searchTerm} />
       </>
   );
 }
