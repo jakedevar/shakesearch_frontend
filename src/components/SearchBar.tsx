@@ -36,7 +36,7 @@ const SearchBar = () => {
         dispatch(setTotalResults(responseObject.totalResults));
       });
     }
-  }, [pageNumber, reload]);
+  }, [pageNumber, reload, caseSensitive]);
 
   const handleQuanityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setQuantity(parseInt(e.target.value)));
@@ -50,7 +50,7 @@ const SearchBar = () => {
   return (
     <div>
       <form>
-        <input type="radio" id="caseSensitive" name="caseSensitive" defaultChecked={caseSensitive} className="inline-flex items-center cursor-pointer" onClick={() => {dispatch(setCaseSensitive(!caseSensitive))}} /><p>Case Sensitive</p>
+        <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setCaseSensitive(!caseSensitive))}} /><p>Case Sensitive</p>
         <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer" onChange={(e) => {handleQuanityChange(e)}}>
           <option value="10">10</option>
           <option value="20">20</option>
