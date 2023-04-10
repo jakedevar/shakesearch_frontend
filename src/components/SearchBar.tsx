@@ -1,27 +1,26 @@
 import resultsAPICall from '../utils/resultsAPICall';
-import {useState, useEffect} from 'react';
+import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults } from '../slices/storeSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { useState, useEffect } from 'react';
+import { ApiCallResult } from '../types/ApiCallResult';
 
-type SearchBarProps = {
-  caseSensitive: boolean;
-  results: string[];
-  searchTerm: string;
-  pageNumber: number;
-  quantity: number;
-  setResults: React.Dispatch<React.SetStateAction<string[]>>;
-  setCaseSensitive: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-  setPageNumber: React.Dispatch<React.SetStateAction<number>>;
-  setQuantity: React.Dispatch<React.SetStateAction<number>>;
-}
+const SearchBar = () => {
+  const dispatch = useAppDispatch();
+  const caseSensitive = useAppSelector((state) => state.store.caseSensitive);
+  const searchTerm = useAppSelector((state) => state.store.searchTerm);
+  const pageNumber = useAppSelector((state) => state.store.pageNumber);
+  const quantity = useAppSelector((state) => state.store.quantity);
 
-const SearchBar = ({caseSensitive, results, searchTerm, pageNumber, quantity, setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity}: SearchBarProps) => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
       if (searchTerm.length > 0) {
-        setPageNumber(1);
-        resultsAPICall(caseSensitive, searchTerm, setResults, pageNumber, quantity);
+        dispatch(setPageNumber(1));
+        resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity).then((responseObject: ApiCallResult) => {
+          dispatch(setResults(responseObject.results));
+          dispatch(setTotalResults(responseObject.totalResults));
+        });
       }
     }, 500);
     return () => {
@@ -29,11 +28,30 @@ const SearchBar = ({caseSensitive, results, searchTerm, pageNumber, quantity, se
     };
   }, [searchTerm]);
 
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      if (searchTerm.length > 0) {
+        resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity).then((responseObject: ApiCallResult) => {
+          dispatch(setResults(responseObject.results));
+          dispatch(setTotalResults(responseObject.totalResults));
+        });
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [pageNumber]);
+
+  const handleQuanityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(setQuantity(parseInt(e.target.value)));
+    dispatch(setPageNumber(1));
+  }
+
   return (
     <div>
       <form>
-        <input type="radio" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onClick={() => {setCaseSensitive(!caseSensitive)}} /><p>Case Sensitive</p>
-        <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer" onChange={(e) => {setQuantity(parseInt(e.target.value))}}>
+        <input type="radio" id="caseSensitive" name="caseSensitive" defaultChecked={caseSensitive} className="inline-flex items-center cursor-pointer" onClick={() => {dispatch(setCaseSensitive(!caseSensitive))}} /><p>Case Sensitive</p>
+        <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer" onChange={(e) => {handleQuanityChange(e)}}>
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="30">30</option>
@@ -42,7 +60,7 @@ const SearchBar = ({caseSensitive, results, searchTerm, pageNumber, quantity, se
         </select>
         <input
           value={searchTerm}
-          onChange={(e) => e.target.value.length === 0 ? setSearchTerm(e.target.value) : (function() {setResults([]); setSearchTerm(e.target.value)})()}
+          onChange={(e) => e.target.value.length === 0 ? dispatch(setSearchTerm(e.target.value)) : (function() {dispatch(setResults([])); dispatch(setSearchTerm(e.target.value))})()}
           className="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-md text-sm focus:outline-none"
           />
         <button type="submit">Search</button>
