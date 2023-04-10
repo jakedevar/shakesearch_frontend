@@ -19,3 +19,10 @@ these states? If i use redux now then it might save me time developing each comp
 passed to them. the only option would be to know what the future would be. I do want development to be at the speed of thought, and as this grows doing this now
 would save time in the future. also it would result in cleaner code. I think I am going to use redux here.
 
+so i am running into an issue, i have set change quantity to fire an api call by having a useEffect hook look for a change in page number. 
+change quantity though, will not fire again if the quantity is changed while on the first page. 
+i think i can fix this by having a reload page boolean that fires every time i want something to change but not have to do anything about the page number
+this seems like a patch work fix though. 
+
+what i could do instead is call the first 50 responses back to the frontend and store those. but then how would i reload the front end...
+change boolean it is

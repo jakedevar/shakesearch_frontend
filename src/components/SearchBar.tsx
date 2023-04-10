@@ -1,5 +1,5 @@
 import resultsAPICall from '../utils/resultsAPICall';
-import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults } from '../slices/storeSlice';
+import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState, useEffect } from 'react';
 import { ApiCallResult } from '../types/ApiCallResult';
@@ -10,6 +10,7 @@ const SearchBar = () => {
   const searchTerm = useAppSelector((state) => state.store.searchTerm);
   const pageNumber = useAppSelector((state) => state.store.pageNumber);
   const quantity = useAppSelector((state) => state.store.quantity);
+  const reload = useAppSelector((state) => state.store.reload);
 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   useEffect(() => {
@@ -29,22 +30,21 @@ const SearchBar = () => {
   }, [searchTerm]);
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      if (searchTerm.length > 0) {
-        resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity).then((responseObject: ApiCallResult) => {
-          dispatch(setResults(responseObject.results));
-          dispatch(setTotalResults(responseObject.totalResults));
-        });
-      }
-    }, 500);
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [pageNumber]);
+    if (searchTerm.length > 0) {
+      resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity).then((responseObject: ApiCallResult) => {
+        dispatch(setResults(responseObject.results));
+        dispatch(setTotalResults(responseObject.totalResults));
+      });
+    }
+  }, [pageNumber, reload]);
 
-  const handleQuanityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleQuanityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setQuantity(parseInt(e.target.value)));
-    dispatch(setPageNumber(1));
+    if (pageNumber > 1) {
+      dispatch(setPageNumber(1));
+    } else {
+      dispatch(setReload(!reload));
+    }
   }
 
   return (
