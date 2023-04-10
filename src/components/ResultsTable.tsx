@@ -1,4 +1,4 @@
-// import highlightSearchWord from "../utils/highlightSearchWord";
+import highlightSearchWord from "../utils/highlightSearchWord";
 import { setPageNumber } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 
@@ -8,6 +8,8 @@ const ResultsTable = () => {
   const pageNumber = useAppSelector((state) => state.store.pageNumber);
   const quantity = useAppSelector((state) => state.store.quantity);
   const totalResults = useAppSelector((state) => state.store.totalResults);
+  const searchTerm = useAppSelector((state) => state.store.searchTerm);
+  const caseSensitive = useAppSelector((state) => state.store.caseSensitive);
 
 
   const handlePageClick = async (addOrSubtractFlag: number) => {
@@ -38,10 +40,12 @@ const ResultsTable = () => {
         <tbody>
           {results.length > 0 && results.map((item: string, idx: number) => {
             let alternateColorClass = idx % 2 === 0 ? "bg-green-100 hover:bg-green-300" : "bg-white hover:bg-gray-300" 
-            // let tableData = highlightSearchWord(item, searchTerm);
+            let [beforeSearchTerm, afterSearchTerm] = highlightSearchWord(item, searchTerm, caseSensitive);
             return (
               <tr className={alternateColorClass} key={idx}>
-                <td >{item}</td>
+                <td >
+                  <p>{beforeSearchTerm}<span className="bg-yellow-300">{searchTerm}</span>{afterSearchTerm}</p>
+                </td>
               </tr>
             );
           })}

@@ -1,9 +1,11 @@
-const highlightSearchWord = (text: string, searchWord: string) => {
-  const regex = new RegExp(searchWord, 'gi');
-  const matches = text.match(regex);
-  if (!matches) return text;
-  const highlightedText = text.replace(regex, (match) => `<mark>${match}</mark>`);
-  return highlightedText;
+const highlightSearchWord = (text: string, searchWord: string, caseSensitive: boolean) => {
+  let splitText;
+  if (caseSensitive) {
+    splitText = text.split(new RegExp(`${searchWord}`));
+  } else {
+    splitText = text.split(new RegExp(searchWord, 'i'));
+  }
+  return splitText
 }
 
 export default highlightSearchWord;
