@@ -28,32 +28,34 @@ const ResultsTable = () => {
   }
 
   return (
-    <div>
-      <h3>Number of found searches {totalResults}</h3>
-      <h4>{showAmountOfResults()}</h4>
-      <table>
+    <section className="text-center" aria-labelledby="results-section">
+      <h2 id="results-section" className="sr-only">Search Results</h2>
+      <h3 className="text-xl font-semibold mb-2">Number of found searches {totalResults}</h3>
+      <h4 className="text-lg font-medium mb-4">{showAmountOfResults()}</h4>
+      <table className="mx-auto">
         <thead>
           <tr>
-            <th>Results</th>
+            <th className="text-lg font-semibold">Results</th>
           </tr>
         </thead>
         <tbody>
           {results.length > 0 && results.map((item: string, idx: number) => {
             let alternateColorClass = idx % 2 === 0 ? "bg-green-100 hover:bg-green-300" : "bg-white hover:bg-gray-300" 
-            let [beforeSearchTerm, afterSearchTerm] = highlightSearchWord(item, searchTerm, caseSensitive);
+            let highlightedText = highlightSearchWord(item, searchTerm, caseSensitive);
             return (
-              <tr className={alternateColorClass} key={idx}>
-                <td >
-                  <p>{beforeSearchTerm}<span className="bg-yellow-300">{searchTerm}</span>{afterSearchTerm}</p>
+              <tr className={`${alternateColorClass} cursor-pointer`} key={idx}>
+                <td className="py-2 px-4" dangerouslySetInnerHTML={{__html: highlightedText}}>
                 </td>
               </tr>
             );
           })}
         </tbody>
       </table>
-      <button onClick={async () => { handlePageClick(-1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</button>
-      <button onClick={async () => { handlePageClick(1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</button>
-    </div>
+      <div className="mt-4 space-x-4">
+        <button onClick={async () => { handlePageClick(-1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</button>
+        <button onClick={async () => { handlePageClick(1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</button>
+      </div>
+    </section>
   )
 }
 

@@ -48,17 +48,24 @@ const SearchBar = () => {
   }
 
   return (
-    <div>
-      <form>
-        <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setCaseSensitive(!caseSensitive))}} /><p>Case Sensitive</p>
-        <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer" onChange={(e) => {handleQuanityChange(e)}}>
+    <div className="my-4" aria-labelledby="search-section">
+      <form className="flex flex-col items-center space-y-2">
+        <h2 id="search-section" className="sr-only">Search Bar</h2>
+        <div className="flex items-center space-x-2">
+          <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setCaseSensitive(!caseSensitive))}} />
+          <label htmlFor="caseSensitive" className="cursor-pointer">Case Sensitive</label>
+        </div>
+        <label htmlFor="quantity" className="sr-only">Results per page</label>
+        <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer px-2 py-1 border border-gray-300 rounded" onChange={(e) => {handleQuanityChange(e)}}>
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="30">30</option>
           <option value="40">40</option>
           <option value="50">50</option>
         </select>
+        <label htmlFor="search" className="sr-only">Search Term</label>
         <input
+          id="search"
           value={searchTerm}
           onChange={(e) => e.target.value.length === 0 ? dispatch(setSearchTerm(e.target.value)) : (function() {dispatch(setResults([])); dispatch(setSearchTerm(e.target.value))})()}
           className="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-md text-sm focus:outline-none"
