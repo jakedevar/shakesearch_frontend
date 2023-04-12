@@ -52,6 +52,7 @@ const SearchBar = () => {
     if (exactMatch) {
       return;
     }
+
     dispatch(setCaseSensitive(!caseSensitive));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
@@ -64,6 +65,7 @@ const SearchBar = () => {
     if (caseSensitive) {
       return;
     }
+
     dispatch(setExactMatch(!exactMatch));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
