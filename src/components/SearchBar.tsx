@@ -1,5 +1,5 @@
 import resultsAPICall from '../utils/resultsAPICall';
-import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload } from '../slices/storeSlice';
+import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState, useEffect } from 'react';
 import { ApiCallResult } from '../types/ApiCallResult';
@@ -11,6 +11,7 @@ const SearchBar = () => {
   const pageNumber = useAppSelector((state) => state.store.pageNumber);
   const quantity = useAppSelector((state) => state.store.quantity);
   const reload = useAppSelector((state) => state.store.reload);
+  const exactMatch = useAppSelector((state) => state.store.exactMatch);
 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   useEffect(() => {
@@ -18,7 +19,7 @@ const SearchBar = () => {
       setDebouncedSearchTerm(searchTerm);
       if (searchTerm.length > 0) {
         dispatch(setPageNumber(1));
-        resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity).then((responseObject: ApiCallResult) => {
+        resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
           dispatch(setResults(responseObject.results));
           dispatch(setTotalResults(responseObject.totalResults));
         });
@@ -31,12 +32,12 @@ const SearchBar = () => {
 
   useEffect(() => {
     if (searchTerm.length > 0) {
-      resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity).then((responseObject: ApiCallResult) => {
+      resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
         dispatch(setResults(responseObject.results));
         dispatch(setTotalResults(responseObject.totalResults));
       });
     }
-  }, [pageNumber, reload, caseSensitive]);
+  }, [pageNumber, reload]);
 
   const handleQuanityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setQuantity(parseInt(e.target.value)));
@@ -52,8 +53,10 @@ const SearchBar = () => {
       <form className="flex flex-col items-center space-y-2">
         <h2 id="search-section" className="sr-only">Search Bar</h2>
         <div className="flex items-center space-x-2">
-          <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setCaseSensitive(!caseSensitive))}} />
+          <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setCaseSensitive(!caseSensitive)); dispatch(setPageNumber(1))}} />
           <label htmlFor="caseSensitive" className="cursor-pointer">Case Sensitive</label>
+          <input type="checkbox" id="exactMatch" name="exactMatch" checked={exactMatch} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setExactMatch(!exactMatch)); dispatch(setPageNumber(1))}} />
+          <label htmlFor="exactMatch" className="cursor-pointer">Exact Match</label>
         </div>
         <label htmlFor="quantity" className="sr-only">Results per page</label>
         <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer px-2 py-1 border border-gray-300 rounded" onChange={(e) => {handleQuanityChange(e)}}>
