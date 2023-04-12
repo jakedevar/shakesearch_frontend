@@ -39,8 +39,32 @@ const SearchBar = () => {
     }
   }, [pageNumber, reload]);
 
-  const handleQuanityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleQuanityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setQuantity(parseInt(e.target.value)));
+    if (pageNumber > 1) {
+      dispatch(setPageNumber(1));
+    } else {
+      dispatch(setReload(!reload));
+    }
+  }
+
+  const handleCaseSensitiveChange = () => {
+    if (exactMatch) {
+      return;
+    }
+    dispatch(setCaseSensitive(!caseSensitive));
+    if (pageNumber > 1) {
+      dispatch(setPageNumber(1));
+    } else {
+      dispatch(setReload(!reload));
+    }
+  }
+
+  const handleExactMatchChange = () => {
+    if (caseSensitive) {
+      return;
+    }
+    dispatch(setExactMatch(!exactMatch));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
     } else {
@@ -53,9 +77,9 @@ const SearchBar = () => {
       <form className="flex flex-col items-center space-y-2">
         <h2 id="search-section" className="sr-only">Search Bar</h2>
         <div className="flex items-center space-x-2">
-          <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setCaseSensitive(!caseSensitive)); dispatch(setPageNumber(1))}} />
+          <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={() => {handleCaseSensitiveChange()}} />
           <label htmlFor="caseSensitive" className="cursor-pointer">Case Sensitive</label>
-          <input type="checkbox" id="exactMatch" name="exactMatch" checked={exactMatch} className="inline-flex items-center cursor-pointer" onChange={(e) => {dispatch(setExactMatch(!exactMatch)); dispatch(setPageNumber(1))}} />
+          <input type="checkbox" id="exactMatch" name="exactMatch" checked={exactMatch} className="inline-flex items-center cursor-pointer" onChange={() => {handleExactMatchChange()}} />
           <label htmlFor="exactMatch" className="cursor-pointer">Exact Match</label>
         </div>
         <label htmlFor="quantity" className="sr-only">Results per page</label>
