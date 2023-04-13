@@ -1,18 +1,14 @@
-import highlightSearchWord from "../utils/highlightSearchWord";
 import { setPageNumber } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { ResultObject } from "../types/ResultObject";
+import Table from './Table';
+import LoadingSpinner from "./LoadingSpinner";
 
 const ResultsTable = () => {
   const dispatch = useAppDispatch();
-  const results = useAppSelector((state) => state.store.results);
   const pageNumber = useAppSelector((state) => state.store.pageNumber);
   const quantity = useAppSelector((state) => state.store.quantity);
   const totalResults = useAppSelector((state) => state.store.totalResults);
-  const searchTerm = useAppSelector((state) => state.store.searchTerm);
-  const caseSensitive = useAppSelector((state) => state.store.caseSensitive);
-  const exactMatch = useAppSelector((state) => state.store.exactMatch);
-
+  const loading = useAppSelector((state) => state.store.loading);
 
   const handlePageClick = (addOrSubtractFlag: number) => {
     if (addOrSubtractFlag === 1) {
@@ -29,6 +25,7 @@ const ResultsTable = () => {
     return returnString;
   }
 
+      console.log(loading)
   return (
     <section className="text-center" aria-labelledby="results-section">
       <h2 id="results-section" className="sr-only">Search Results</h2>
@@ -38,25 +35,7 @@ const ResultsTable = () => {
         <button onClick={() => { handlePageClick(-1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</button>
         <button onClick={() => { handlePageClick(1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</button>
       </div>
-      <table className="mx-auto">
-        <thead>
-          <tr>
-            <th className="text-lg font-semibold">Results</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.length > 0 && results.map((item: ResultObject, idx: number) => {
-            let alternateColorClass = idx % 2 === 0 ? "bg-gray-300 hover:bg-gray-100" : "bg-white hover:bg-gray-300" 
-            let highlightedText = highlightSearchWord(item.Line, item.SearchTerm, caseSensitive);
-            return (
-              <tr className={`${alternateColorClass} cursor-pointer`} key={idx}>
-                <td className="py-2 px-4" dangerouslySetInnerHTML={{__html: highlightedText}}>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+        {loading ? <LoadingSpinner /> : <Table />}
       <div className="mt-4 space-x-4">
         <button onClick={() => { handlePageClick(-1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</button>
         <button onClick={() => { handlePageClick(1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</button>

@@ -13,6 +13,7 @@ interface IState {
   totalResults: number;
   reload: boolean;
   exactMatch: boolean;
+  loading: boolean;
 }
 
 const initialState: IState = {
@@ -23,7 +24,8 @@ const initialState: IState = {
   quantity: 10,
   totalResults: 0,
   reload: false,
-  exactMatch: false
+  exactMatch: false,
+  loading: false
 };
 
 export const storeSlice = createSlice({
@@ -53,11 +55,14 @@ export const storeSlice = createSlice({
     },
     setExactMatch: (state, action) => {
       state.exactMatch = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     }
   },
 })
 
-export const { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch } = storeSlice.actions
+export const { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch, setLoading } = storeSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value

@@ -1,5 +1,5 @@
 import resultsAPICall from '../utils/resultsAPICall';
-import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch } from '../slices/storeSlice';
+import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch, setLoading } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState, useEffect } from 'react';
 import { ApiCallResult } from '../types/ApiCallResult';
@@ -18,11 +18,13 @@ const SearchBar = () => {
     const timerId = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
       if (searchTerm.length > 0) {
+        dispatch(setResults([]));
         dispatch(setPageNumber(1));
         resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
           dispatch(setResults(responseObject.results));
           dispatch(setTotalResults(responseObject.totalResults));
         });
+        dispatch(setLoading(false));
       }
     }, 500);
     return () => {
@@ -35,12 +37,14 @@ const SearchBar = () => {
       resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
         dispatch(setResults(responseObject.results));
         dispatch(setTotalResults(responseObject.totalResults));
+        dispatch(setLoading(false));
       });
     }
   }, [pageNumber, reload]);
 
   const handleQuanityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setQuantity(parseInt(e.target.value)));
+    dispatch(setLoading(true));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
     } else {
@@ -49,6 +53,7 @@ const SearchBar = () => {
   }
 
   const handleCaseSensitiveChange = () => {
+    dispatch(setLoading(true));
     if (exactMatch) {
       return;
     }
@@ -62,6 +67,7 @@ const SearchBar = () => {
   }
 
   const handleExactMatchChange = () => {
+    dispatch(setLoading(true));
     if (caseSensitive) {
       return;
     }
@@ -96,7 +102,7 @@ const SearchBar = () => {
         <input
           id="search"
           value={searchTerm}
-          onChange={(e) => e.target.value.length === 0 ? dispatch(setSearchTerm(e.target.value)) : (function() {dispatch(setResults([])); dispatch(setSearchTerm(e.target.value))})()}
+          onChange={(e) => e.target.value.length === 0 ? dispatch(setSearchTerm(e.target.value)) : (function() {dispatch(setLoading(true)); dispatch(setResults([])); dispatch(setSearchTerm(e.target.value))})()}
           className="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-md text-sm focus:outline-none"
           />
         <button type="submit">Search</button>
