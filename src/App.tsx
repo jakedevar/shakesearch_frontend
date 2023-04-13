@@ -5,11 +5,11 @@ import ResultsTable from './components/ResultsTable';
 
 function App() {
   return (
-    <>
+    <body className='"bg-gray-100 p-6"'>
       <TitleBar />
       <SearchBar />
       <ResultsTable />
-    </>
+    </body>
   );
 }
 

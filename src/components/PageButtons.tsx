@@ -15,9 +15,9 @@ const PageButtons = () => {
   }
 
   return (
-    <div className="mt-4 space-x-4">
-      <button onClick={() => { handlePageClick(-1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</button>
-      <button onClick={() => { handlePageClick(1) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</button>
+    <div className="mt-4 space-x-4 py-4">
+      <button onClick={() => { handlePageClick(-1) }} className="bg-gray-800 text-white hover:bg-gray-400 font-bold py-2 px-4 rounded">Previous</button>
+      <button onClick={() => { handlePageClick(1) }} className="bg-gray-800 text-white hover:bg-gray-400  font-bold py-2 px-4 rounded">Next</button>
     </div>
   )   
 }

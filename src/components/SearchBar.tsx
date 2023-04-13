@@ -86,7 +86,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="my-4" aria-labelledby="search-section">
+    <div className="my-4 w-3/4 flex v-screen items-center" aria-labelledby="search-section">
       <form className="flex flex-col items-center space-y-2">
         <h2 id="search-section" className="sr-only">Search Bar</h2>
         <div className="flex items-center space-x-2">
@@ -94,15 +94,15 @@ const SearchBar = () => {
           <label htmlFor="caseSensitive" className="cursor-pointer">Case Sensitive</label>
           <input type="checkbox" id="exactMatch" name="exactMatch" checked={exactMatch} className="inline-flex items-center cursor-pointer" onChange={() => {handleExactMatchChange()}} />
           <label htmlFor="exactMatch" className="cursor-pointer">Exact Match</label>
+          <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer px-2 py-1 border border-gray-300 rounded" onChange={(e) => {handleQuanityChange(e)}}>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+          <label htmlFor="quantity" className="sr-only">Results per page</label>
         </div>
-        <label htmlFor="quantity" className="sr-only">Results per page</label>
-        <select name="quantity" id="quantity" className="inline-flex items-center cursor-pointer px-2 py-1 border border-gray-300 rounded" onChange={(e) => {handleQuanityChange(e)}}>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="30">30</option>
-          <option value="40">40</option>
-          <option value="50">50</option>
-        </select>
         <label htmlFor="search" className="sr-only">Search Term</label>
         <input
           id="search"

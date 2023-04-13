@@ -10,10 +10,10 @@ const Table = () => {
   return(
     <>
     <PageButtons />
-    <table className="mx-auto">
+    <table className="mx-auto w-4/5 bg-white rounded-xl border-slate-800 border-2">
       <tbody>
         {results.length > 0 && results.map((item: ResultObject, idx: number) => {
-          let alternateColorClass = idx % 2 === 0 ? "bg-gray-300 hover:bg-gray-100" : "bg-white hover:bg-gray-300" 
+          let alternateColorClass = idx % 2 === 0 ? "bg-gray-300 hover:bg-gray-400 hover:text-white" : "bg-white hover:bg-gray-400 hover:text-white";
           let highlightedText = highlightSearchWord(item.Line, item.SearchTerm, caseSensitive);
           return (
             <tr className={`${alternateColorClass} cursor-pointer`} key={idx}>
