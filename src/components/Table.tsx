@@ -1,18 +1,16 @@
 import highlightSearchWord from "../utils/highlightSearchWord";
 import {useAppSelector} from '../hooks'
 import { ResultObject } from "../types/ResultObject";
+import PageButtons from "./PageButtons";
 
 const Table = () => {
   const results = useAppSelector((state) => state.store.results);
   const caseSensitive = useAppSelector((state) => state.store.caseSensitive);
 
   return(
+    <>
+    <PageButtons />
     <table className="mx-auto">
-      <thead>
-        <tr>
-          <th className="text-lg font-semibold">Results</th>
-        </tr>
-      </thead>
       <tbody>
         {results.length > 0 && results.map((item: ResultObject, idx: number) => {
           let alternateColorClass = idx % 2 === 0 ? "bg-gray-300 hover:bg-gray-100" : "bg-white hover:bg-gray-300" 
@@ -26,6 +24,8 @@ const Table = () => {
         })}
       </tbody>
     </table>
+    <PageButtons />
+        </>
   )
 }
 

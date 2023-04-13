@@ -1,7 +1,7 @@
 import resultsAPICall from '../utils/resultsAPICall';
-import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch, setLoading } from '../slices/storeSlice';
+import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch, setLoading, } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { ApiCallResult } from '../types/ApiCallResult';
 
 const SearchBar = () => {
@@ -12,19 +12,27 @@ const SearchBar = () => {
   const quantity = useAppSelector((state) => state.store.quantity);
   const reload = useAppSelector((state) => state.store.reload);
   const exactMatch = useAppSelector((state) => state.store.exactMatch);
+  const results = useAppSelector((state) => state.store.results);
 
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  if (searchTerm.length == 0) {
+    dispatch(setLoading(false));
+  }
+
   useEffect(() => {
     const timerId = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
       if (searchTerm.length > 0) {
+        dispatch(setLoading(true));
         dispatch(setResults([]));
-        dispatch(setPageNumber(1));
-        resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
-          dispatch(setResults(responseObject.results));
-          dispatch(setTotalResults(responseObject.totalResults));
-        });
-        dispatch(setLoading(false));
+        if (pageNumber > 1) {
+          dispatch(setPageNumber(1));
+        } else {
+          dispatch(setReload(!reload));
+        }
+        // resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
+        //   dispatch(setResults(responseObject.results));
+        //   dispatch(setTotalResults(responseObject.totalResults));
+        //   dispatch(setLoading(false));
+        // });
       }
     }, 500);
     return () => {
@@ -42,9 +50,16 @@ const SearchBar = () => {
     }
   }, [pageNumber, reload]);
 
+  const handleSearchBarTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setLoading(true));
+    if (results.length !== 0) {
+      dispatch(setResults([]));
+    }
+    dispatch(setSearchTerm(e.target.value));
+  };
+
   const handleQuanityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setQuantity(parseInt(e.target.value)));
-    dispatch(setLoading(true));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
     } else {
@@ -53,11 +68,6 @@ const SearchBar = () => {
   }
 
   const handleCaseSensitiveChange = () => {
-    dispatch(setLoading(true));
-    if (exactMatch) {
-      return;
-    }
-
     dispatch(setCaseSensitive(!caseSensitive));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
@@ -67,11 +77,6 @@ const SearchBar = () => {
   }
 
   const handleExactMatchChange = () => {
-    dispatch(setLoading(true));
-    if (caseSensitive) {
-      return;
-    }
-
     dispatch(setExactMatch(!exactMatch));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
@@ -102,12 +107,10 @@ const SearchBar = () => {
         <input
           id="search"
           value={searchTerm}
-          onChange={(e) => e.target.value.length === 0 ? dispatch(setSearchTerm(e.target.value)) : (function() {dispatch(setLoading(true)); dispatch(setResults([])); dispatch(setSearchTerm(e.target.value))})()}
+          onChange={(e) => e.target.value.length === 0 ? dispatch(setSearchTerm(e.target.value)) : handleSearchBarTyping(e)}
           className="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-md text-sm focus:outline-none"
           />
-        <button type="submit">Search</button>
       </form>
-      <p>Searching for: {debouncedSearchTerm}</p>
     </div>
   );
 }
