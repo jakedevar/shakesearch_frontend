@@ -28,11 +28,6 @@ const SearchBar = () => {
         } else {
           dispatch(setReload(!reload));
         }
-        // resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
-        //   dispatch(setResults(responseObject.results));
-        //   dispatch(setTotalResults(responseObject.totalResults));
-        //   dispatch(setLoading(false));
-        // });
       }
     }, 500);
     return () => {
@@ -86,7 +81,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="my-4 w-3/4 flex v-screen items-center" aria-labelledby="search-section">
+    <div className="my-4 w-full flex v-screen justify-center items-center" aria-labelledby="search-section">
       <form className="flex flex-col items-center space-y-2">
         <h2 id="search-section" className="sr-only">Search Bar</h2>
         <div className="flex items-center space-x-2">
@@ -101,7 +96,7 @@ const SearchBar = () => {
             <option value="40">40</option>
             <option value="50">50</option>
           </select>
-          <label htmlFor="quantity" className="sr-only">Results per page</label>
+          <label htmlFor="quantity" className="cursor-pointer">Results per page</label>
         </div>
         <label htmlFor="search" className="sr-only">Search Term</label>
         <input
