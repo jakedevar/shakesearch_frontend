@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build; rm -r ../static/*; cp -r build/* ../static",
+    "build": "react-scripts build; rm -r ../shakesearch/static/*; cp -r build/* ../shakesearch/static",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
