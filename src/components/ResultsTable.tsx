@@ -11,7 +11,13 @@ const ResultsTable = () => {
 
   const ShowDocsOrSpinner = () => {
     if (!loading && totalResults === 0) {
-      return <p>Hi welcome to Shakesearch</p>
+      return (
+        <div className='justify-center items-center text-center'>
+          <h2 className='text-lg font-bold'>Hi welcome to Shakesearch</h2>
+          <p>To search just type in the search bar and your results will be displayed!</p>
+          <p>Don't worry about misspellings, the program can handle a few errors</p>
+        </div>
+      )
     } else {
       return loading ? <LoadingSpinner /> : <Table />
     }

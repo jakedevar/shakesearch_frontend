@@ -63,7 +63,9 @@ const SearchBar = () => {
   }
 
   const handleCaseSensitiveChange = () => {
-    dispatch(setLoading(true));
+    if (searchTerm.length > 0) {
+      dispatch(setLoading(true));
+    }
     dispatch(setCaseSensitive(!caseSensitive));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));
@@ -73,7 +75,9 @@ const SearchBar = () => {
   }
 
   const handleExactMatchChange = () => {
-    dispatch(setLoading(true));
+    if (searchTerm.length > 0) {
+      dispatch(setLoading(true));
+    }
     dispatch(setExactMatch(!exactMatch));
     if (pageNumber > 1) {
       dispatch(setPageNumber(1));

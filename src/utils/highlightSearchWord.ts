@@ -1,4 +1,5 @@
 import escapeRegExp from "./escapedRegExp";
+
 const highlightSearchWord = (text: string, searchWord: string, caseSensitive: boolean) => {
   const escapedSearchWord = escapeRegExp(searchWord);
   const pattern = new RegExp(`${escapedSearchWord}`, caseSensitive ? 'g' : 'ig');
