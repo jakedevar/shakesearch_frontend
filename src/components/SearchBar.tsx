@@ -1,5 +1,5 @@
 import resultsAPICall from '../utils/resultsAPICall';
-import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch, setLoading, } from '../slices/storeSlice';
+import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch, setLoading, setError } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useEffect } from 'react';
 import { ApiCallResult } from '../types/ApiCallResult';
@@ -13,6 +13,7 @@ const SearchBar = () => {
   const reload = useAppSelector((state) => state.store.reload);
   const exactMatch = useAppSelector((state) => state.store.exactMatch);
   const results = useAppSelector((state) => state.store.results);
+  const error = useAppSelector((state) => state.store.error);
 
   if (searchTerm.length === 0) {
     dispatch(setLoading(false));
@@ -38,6 +39,9 @@ const SearchBar = () => {
   useEffect(() => {
     if (searchTerm.length > 0) {
       resultsAPICall(caseSensitive, searchTerm, pageNumber, quantity, exactMatch).then((responseObject: ApiCallResult) => {
+        if (responseObject.error !== undefined) {
+          dispatch(setError(responseObject.error));
+        }
         dispatch(setResults(responseObject.results));
         dispatch(setTotalResults(responseObject.totalResults));
         dispatch(setLoading(false));
@@ -46,7 +50,12 @@ const SearchBar = () => {
   }, [pageNumber, reload]);
 
   const handleSearchBarTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setLoading(true));
+    if (error !== undefined) {
+      dispatch(setError(0));
+    }
+    if (searchTerm.length > 0) {
+      dispatch(setLoading(true));
+    }
     if (results.length !== 0) {
       dispatch(setResults([]));
     }
@@ -63,6 +72,9 @@ const SearchBar = () => {
   }
 
   const handleCaseSensitiveChange = () => {
+    if (error !== undefined) {
+      dispatch(setError(0));
+    }
     if (searchTerm.length > 0) {
       dispatch(setLoading(true));
     }
@@ -75,6 +87,9 @@ const SearchBar = () => {
   }
 
   const handleExactMatchChange = () => {
+    if (error !== undefined) {
+      dispatch(setError(0));
+    }
     if (searchTerm.length > 0) {
       dispatch(setLoading(true));
     }

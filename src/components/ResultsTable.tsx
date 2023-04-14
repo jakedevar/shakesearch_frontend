@@ -8,6 +8,17 @@ const ResultsTable = () => {
   const searchTerm = useAppSelector((state) => state.store.searchTerm);
   const quantity = useAppSelector((state) => state.store.quantity);
   const pageNumber = useAppSelector((state) => state.store.pageNumber);
+  const error = useAppSelector((state) => state.store.error);
+
+  const showSearchingOrError = () => {
+    if (error > 399 && searchTerm.length > 0) {
+      return `Error ${error}: There was an error with your search. Please try again.`;
+    } else if (loading) {
+      return `Searching for ${searchTerm}`;
+    } else {
+      return showAmountOfResults();
+    }
+  }
 
   const ShowDocsOrSpinner = () => {
     if (!loading && totalResults === 0) {
@@ -15,7 +26,7 @@ const ResultsTable = () => {
         <div className='justify-center items-center text-center'>
           <h2 className='text-lg font-bold'>Hi welcome to Shakesearch</h2>
           <p>To search just type in the search bar and your results will be displayed!</p>
-          <p>Don't worry about misspellings, the program can handle a few errors</p>
+          <p>Don't worry about misspellings; the program can handle a few mistakes.</p>
         </div>
       )
     } else {
@@ -35,7 +46,7 @@ const ResultsTable = () => {
       <section className="text-center" aria-labelledby="results-section">
         {/* <h2 id="results-section" className="sr-only">Search Results</h2> */}
         {/* <h3 className="text-xl font-semibold mb-2">Number of found searches {totalResults}</h3> */}
-        <h3 className="text-xl font-semibold mb-2">{loading ? `Searching for ${searchTerm}` : showAmountOfResults()}</h3>
+        <h3 className={error > 0 ? "text-red-500 text-xl font-semibold mb-2" : "text-xl font-semibold mb-2"}>{showSearchingOrError()}</h3>
         {ShowDocsOrSpinner()}
       </section>
       </>
