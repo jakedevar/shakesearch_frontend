@@ -44,8 +44,6 @@ const ResultsTable = () => {
   return (
     <>
       <section className="text-center" aria-labelledby="results-section">
-        {/* <h2 id="results-section" className="sr-only">Search Results</h2> */}
-        {/* <h3 className="text-xl font-semibold mb-2">Number of found searches {totalResults}</h3> */}
         <h3 className={error > 0 ? "text-red-500 text-xl font-semibold mb-2" : "text-xl font-semibold mb-2"}>{showSearchingOrError()}</h3>
         {ShowDocsOrSpinner()}
       </section>
