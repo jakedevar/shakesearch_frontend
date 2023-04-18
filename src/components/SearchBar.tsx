@@ -101,9 +101,14 @@ const SearchBar = () => {
     }
   }
 
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="my-4 w-full flex v-screen justify-center items-center" aria-labelledby="search-section">
-      <form className="flex flex-col items-center space-y-2">
+      <form className="flex flex-col items-center space-y-2" onSubmit={(e) => handleFormSubmit(e)}>
         <h2 id="search-section" className="sr-only">Search Bar</h2>
         <div className="flex items-center space-x-2">
           <input type="checkbox" id="caseSensitive" name="caseSensitive" checked={caseSensitive} className="inline-flex items-center cursor-pointer" onChange={() => {handleCaseSensitiveChange()}} />
