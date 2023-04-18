@@ -1,7 +1,7 @@
 import resultsAPICall from '../utils/resultsAPICall';
 import { setResults, setCaseSensitive, setSearchTerm, setPageNumber, setQuantity, setTotalResults, setReload, setExactMatch, setLoading, setError } from '../slices/storeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ApiCallResult } from '../types/ApiCallResult';
 
 const SearchBar = () => {
@@ -14,6 +14,8 @@ const SearchBar = () => {
   const exactMatch = useAppSelector((state) => state.store.exactMatch);
   const results = useAppSelector((state) => state.store.results);
   const error = useAppSelector((state) => state.store.error);
+
+  const [isLoaded, setIsLoaded] = useState(false);
 
   if (searchTerm.length === 0) {
     dispatch(setLoading(false));
@@ -48,6 +50,10 @@ const SearchBar = () => {
       });
     }
   }, [pageNumber, reload]);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, [])
 
   const handleSearchBarTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (error !== undefined) {
@@ -101,7 +107,6 @@ const SearchBar = () => {
     }
   }
 
-
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
@@ -127,6 +132,7 @@ const SearchBar = () => {
         <label htmlFor="search" className="sr-only">Search Term</label>
         <input
           id="search"
+          disabled={!isLoaded}
           value={searchTerm}
           onChange={(e) => e.target.value.length === 0 ? dispatch(setSearchTerm(e.target.value)) : handleSearchBarTyping(e)}
           className="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-md text-sm focus:outline-none"
